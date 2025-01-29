@@ -1,52 +1,76 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import Rating from '@mui/material/Rating';
 import { TfiFullscreen } from "react-icons/tfi";
 import { IoMdHeartEmpty } from "react-icons/io";
 import { Button } from '@mui/material';
 import ProductModel from './ProductModel';
+import { Link } from 'react-router-dom';
 
-const ProductItem = (props) => {
+const ProductItem = ({ title, img, discount, oldPrice, netPrice, rating , brand,desc,mfg,exp,stock }) => {
+    const [isOpenProductModel, setIsOpenProductModel] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState(null);
 
-    const[isOpenProductModel,setIsOpenProductModel]=useState(false);
-    const ViewProductDetails=(id)=>{
+    const viewProductDetails = () => {
+        setSelectedProduct({ title, img, discount, oldPrice, netPrice, rating , brand,desc,mfg,exp,stock });
         setIsOpenProductModel(true);
-    }
-    const closeProductModel=()=>{
+    };
+
+    const closeProductModel = () => {
         setIsOpenProductModel(false);
-    }
+        setSelectedProduct(null);
+    };
+
     return (
-        <>
-            <div className={`item productItem ${props.itemView}`}>
-                <div className="imgWrapper">
-                    <img
-                        src="https://klbtheme.com/bacola/wp-content/uploads/2021/04/product-image-3-346x310.jpg"
-                        className='w-100'
-                        alt="Product"
-                    />
+        <div className="item productItem">
+            <div className="imgWrapper">
+                <img
+                    src={img}
+                    className="w-100"
+                    alt={title || "Product"}
+                />
+                {discount && (
+                    <span className="badge badge-primary position-absolute">
+                        {discount}%
+                    </span>
+                )}
 
-                <span className='badge badge-primary'>12%</span>
-
-                <div className="actions">
-                    <Button onClick={()=>ViewProductDetails(1)}><TfiFullscreen/></Button>
-                    <Button><IoMdHeartEmpty style={{fontSize:'20px'}}/></Button>
-                </div>
-
-                </div>
-
-                <div className="info">
-                    <h4>Werther's Original Caramel Hard candies</h4>
-                    <span className='text-success d-block'>In Stock</span>
-                    <Rating className="mt-2 mb-2" name="read-only" value={4} size="small" readOnly />
-                    <div className="d-flex">
-                        <span className='oldPrice'>₹25.0</span>
-                        <span className='netPrice ml-2 text-danger'>₹22.0</span>
-                    </div>
+                <div className="actions position-absolute">
+                    <Button onClick={viewProductDetails}>
+                        <TfiFullscreen />
+                    </Button>
+                    <Button>
+                        <IoMdHeartEmpty style={{ fontSize: '20px' }} />
+                    </Button>
                 </div>
             </div>
-            
-            {isOpenProductModel==true && <ProductModel closeProductModel={closeProductModel}/>}
-        </>
-    )
-}
 
-export default ProductItem
+            <Link to="/product/1" style={{ textDecoration: 'none' }}>
+                <div className="info mt-3">
+                    <h4 className="mb-2 text-black">{title}</h4>
+                    <span className="text-success d-block">In Stock</span>
+                    <Rating
+                        className="mt-2 mb-2"
+                        name="read-only"
+                        value={rating || 0}
+                        size="small"
+                        readOnly
+                    />
+                    <div className="d-flex align-items-center">
+                        {oldPrice && <span className="oldPrice">₹{oldPrice}</span>}
+                        <span className="netPrice ml-2 text-danger">₹{netPrice}</span>
+                    </div>
+                </div>
+            </Link>
+
+            {isOpenProductModel && (
+                <ProductModel
+                    product={selectedProduct}
+                    closeProductModel={closeProductModel}
+                />
+            )}
+        </div>
+    );
+};
+
+
+export default ProductItem;

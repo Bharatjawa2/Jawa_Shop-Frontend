@@ -1,132 +1,92 @@
-import React, { useRef } from 'react'
-import Dialog from '@mui/material/Dialog';
-import { Button} from '@mui/material';
+import React from "react";
+import Dialog from "@mui/material/Dialog";
+import { Button } from "@mui/material";
 import { MdClose } from "react-icons/md";
-import Rating from '@mui/material/Rating';
-import Slider from 'react-slick';
-import InnerImageZoom from'react-inner-image-zoom';
-import 'react-inner-image-zoom/lib/InnerImageZoom/styles.css';
+import Rating from "@mui/material/Rating";
+import QuantityDropDown from "./QuantityDropDown";
 
-import QuantityDropDown from './QuantityDropDown';
+const ProductModel = ({ product, closeProductModel }) => {
+  const isInStock = product.stock > 0;
 
-const ProductModel = (props) => {
+  return (
+    <Dialog open={true} className="ProductModel" onClose={closeProductModel}>
+      {/* Close Button */}
+      <Button className="close-btn" onClick={closeProductModel}>
+        <MdClose size={24} />
+      </Button>
 
-    const zoomSliderBig=useRef();
-    const zoomSlider=useRef();
+      <div className="product-model-content">
+        {/* Product Title and Rating */}
+        <h4 className="product-title mb-1">{product.title}</h4>
+        <div className="d-flex align-items-center mb-3">
+          <div className="brand-info mr-4">
+            <span>Brand:</span>
+            <b className="ml-2">{product.brand}</b>
+          </div>
+          <Rating
+            name="read-only"
+            value={product.rating}
+            size="small"
+            precision={0.5}
+            readOnly
+          />
+        </div>
+        <hr />
 
-    var settings={
-        dots:false,
-        infinite:false,
-        speed:700,
-        slidesToShow:1,
-        slidesToScroll:1,
-        fade:false,
-        arrows:false,
-    }
+        <div className="row product-details">
+          {/* Product Image */}
+          <div className="col-md-5">
+            <div className="product-image">
+              <img
+                src={product.img}
+                alt={product.title}
+                className="img-fluid rounded shadow"
+              />
+            </div>
+          </div>
 
-    var settings2={
-        dots:false,
-        infinite:false,
-        speed:500,
-        slidesToShow:5,
-        slidesToScroll:1,
-        fade:false,
-        arrows:true,
-    }
+          {/* Product Details */}
+          <div className="col-md-7">
+            <div className="price-info mb-3">
+              <span className="old-price">₹{product.oldPrice}</span>
+              <span className="net-price ml-2 text-danger font-weight-bold">
+                ₹{product.netPrice}
+              </span>
+            </div>
 
-    const goto=(index)=>{
-        zoomSlider.current.slickGoto(index);
-        zoomSliderBig.current.slickGoto(index);
-    }
-    return (
-        <>
-            <Dialog open={true} className='ProductModel' onClose={()=>props.closeProductModel()}>
-                <Button className='cross' onClick={()=>props.closeProductModel()}><MdClose /></Button>
-                <h4 className='mb-1 font-weight-bold'> All Natural Italian-style Chicekn Meatballs</h4>
-                <div className="d-flex align-items-center">
-                    <div className="d-flex align-items-center mr-4">
-                        <span>Brands :</span>
-                        <span className='ml-2'><b>Welch's</b></span>
-                    </div>
-                    <Rating name="read-only" value={5} size="small" precision={0.5 } readOnly />
+            {/* Stock Badge */}
+            <span
+              className={`badge ${
+                isInStock ? "bg-success" : "bg-danger"
+              } text-white`}
+            >
+              {isInStock ? "IN STOCK" : "OUT OF STOCK"}
+            </span>
 
-                </div>
-                <hr/>
+            {/* Product Description */}
+            <p className="product-desc mt-3">{product.desc}</p>
 
-                <div className="row mt-2 productDetailsModel">
-                    <div className="col-md-5">
-                        <div className="productZoom">
-                        <Slider {...settings} className='zoomSliderBig' ref={zoomSliderBig}>
-                            <div className="item">
-                                <InnerImageZoom
-                                    zoomType='hover' zoomScale={1}
-                                    src={'https://klbtheme.com/bacola/wp-content/uploads/2021/04/product-image-62.jpg'}
-                                />
-                            </div>
+            {/* Quantity and Add to Cart */}
+            <div className="d-flex align-items-center mt-4">
+              <QuantityDropDown />
+              <Button
+                className="btn btn-primary btn-big btn-round ml-3"
+                disabled={!isInStock}
+              >
+                Add to Cart
+              </Button>
+            </div>
 
-                            <div className="item">
-                                <InnerImageZoom
-                                    zoomType='hover' zoomScale={1}
-                                    src={'https://klbtheme.com/bacola/wp-content/uploads/2021/04/product-image2-47.jpg'}
-                                />
-                            </div>
+            {/* Manufacturing and Expiry Dates */}
+            <div className="additional-info mt-5">
+              <p className="mfg-date">Mfd Date: {product.mfg}</p>
+              <p className="exp-date">Exp Date: {product.exp}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Dialog>
+  );
+};
 
-                            <div className="item">
-                                <InnerImageZoom
-                                    zoomType='hover' zoomScale={1}
-                                    src={'https://klbtheme.com/bacola/wp-content/uploads/2021/04/product-image3-35.jpg'}
-                                />
-                            </div>
-                        </Slider>
-                        </div>
-                        
-                        <Slider {...settings2} className='zoomSlider' ref={zoomSlider}>
-                            <div className="item">
-                                <img src={'https://klbtheme.com/bacola/wp-content/uploads/2021/04/product-image-62.jpg'}
-                                    className='w-100' onClick={()=>goto(0)}
-                                />
-                            </div>
-
-                            <div className="item">
-                                <img src={'https://klbtheme.com/bacola/wp-content/uploads/2021/04/product-image2-47.jpg'}
-                                    className='w-100' onClick={()=>goto(1)}
-                                />
-                            </div>
-
-                            <div className="item">
-                                <img src={'https://klbtheme.com/bacola/wp-content/uploads/2021/04/product-image3-35.jpg'}
-                                    className='w-100' onClick={()=>goto(2)}
-                                />
-                            </div>
-                        </Slider>
-                    </div>
-                    <div className="col-md-7">
-                        <div className="d-flex info align-items-center mb-2">
-                            <span className='oldPrice lg mr-2'>₹25.0</span>
-                            <span className='netPrice ml-1  lg font-bold text-danger'>₹22.0</span>
-                        </div>
-
-                        <div className="badge bg-success"> 
-                            IN STOCK
-                        </div>
-
-                        <p className='mt-3'>Savory, all-natural Italian-style chicken meatballs, seasoned with herbs, garlic, and spices for wholesome flavor.</p>
-
-                        <div className="d-flex align-items-center">
-                            <QuantityDropDown/>
-                            <Button className='btn-blue btn-big btn-round'>Add to cart</Button>
-                        </div>
-
-                        <div className="align-items-center mt-5">
-                            <p className='pl'>Mfd Date: 25 June 2024</p>
-                            <p className='pl'>Exp Date: 25 June 2026</p>
-                        </div>
-                        <hr/>
-                    </div>
-                </div>
-            </Dialog>
-        </>
-    )
-}
-
-export default ProductModel
+export default ProductModel;

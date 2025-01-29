@@ -10,6 +10,7 @@ import Navigation from './HeaderComponents/Navigation';
 import { MyContext } from '../App';
 import Home from '../pages/Home';
 
+
 const Header = () => {
 
   const context=useContext(MyContext);
@@ -39,7 +40,8 @@ const Header = () => {
                   <div className="ml-auto cartTab d-flex align-items-center">
                     <span className='price'>₹0</span>
                     <div className="position-relative ml-2">
-                      <Button className='circle ml-3'><IoBagOutline/></Button>
+                      <Link to="/cart">
+                      <Button className='circle ml-3'><IoBagOutline/></Button></Link>
                       <span className='count d-flex align-items-center justify-content-center'>1</span>
                     </div>
                   </div>
